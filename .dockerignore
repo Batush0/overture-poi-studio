@@ -1,0 +1,11 @@
+.git/
+.gitignore
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+cache/
+*.duckdb
+*.duckdb.wal
+.DS_Store

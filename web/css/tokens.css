@@ -1,0 +1,66 @@
+:root {
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --bg-app: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-surface-subtle: #f8fafc;
+    --bg-surface-hover: #f1f5f9;
+    --bg-glass: rgba(255, 255, 255, 0.88);
+    --bg-toast: rgba(15, 23, 42, 0.94);
+
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --text-inverse: #ffffff;
+
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-soft: rgba(37, 99, 235, 0.11);
+    --teal: #0d9488;
+    --teal-soft: rgba(13, 148, 136, 0.12);
+    --amber: #d97706;
+    --rose: #e11d48;
+    --rose-soft: rgba(225, 29, 72, 0.11);
+
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.1);
+    --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.16);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --sidebar-width: 400px;
+}
+
+[data-theme="dark"] {
+    --bg-app: #090d16;
+    --bg-surface: #111827;
+    --bg-surface-subtle: #0f172a;
+    --bg-surface-hover: #1e293b;
+    --bg-glass: rgba(17, 24, 39, 0.86);
+    --bg-toast: rgba(30, 41, 59, 0.96);
+
+    --border-subtle: #1f2937;
+    --border-strong: #334155;
+
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-inverse: #ffffff;
+
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-soft: rgba(59, 130, 246, 0.18);
+    --teal: #14b8a6;
+    --teal-soft: rgba(20, 184, 166, 0.18);
+    --rose: #fb7185;
+    --rose-soft: rgba(251, 113, 133, 0.16);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.5);
+}

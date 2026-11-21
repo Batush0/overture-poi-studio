@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overture POI Studio · Geospatial Explorer</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="css/tokens.css?v=6">
+    <link rel="stylesheet" href="css/layout.css?v=6">
+    <link rel="stylesheet" href="css/components.css?v=6">
+    <link rel="stylesheet" href="css/popup.css?v=6">
+</head>
+<body>
+    <div class="app-shell">
+        <aside id="inspector" class="inspector">
+            <header class="brand-bar">
+                <div class="brand-identity">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                            <line x1="9" y1="3" x2="9" y2="18"></line>
+                            <line x1="15" y1="6" x2="15" y2="21"></line>
+                        </svg>
+                    </div>
+                    <div class="brand-meta">
+                        <div class="brand-title" data-i18n="appTitle">Overture POI Studio</div>
+                        <div id="dataset-title" class="brand-dataset" data-i18n="loading">Loading...</div>
+                    </div>
+                </div>
+                <div class="brand-actions">
+                    <select id="lang-select" class="lang-select" aria-label="Language">
+                        <option value="en">EN</option>
+                        <option value="tr">TR</option>
+                        <option value="zh">中文</option>
+                        <option value="de">DE</option>
+                        <option value="ru">RU</option>
+                        <option value="ar">AR</option>
+                    </select>
+                    <button id="theme-toggle" type="button" class="icon-btn" data-i18n-title="themeToggle" title="Toggle Theme" aria-label="Toggle Theme"></button>
+                </div>
+            </header>
+            <nav class="nav-tabs" role="tablist">
+                <button type="button" class="nav-tab active" data-tab="explore-pane">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    <span data-i18n="tabExplore">Explore</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="query-pane">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <span data-i18n="tabQuery">Fetch Data</span>
+                </button>
+                <button type="button" class="nav-tab" data-tab="analytics-pane">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    <span data-i18n="tabAnalytics">Analytics</span>
+                </button>
+            </nav>
+
+            <section id="explore-pane" class="tab-pane active">
+                <div class="pane-scroll">
+                    <div class="card">
+                        <div class="input-wrap">
+                            <span class="input-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            </span>
+                            <input id="search-input" class="text-input with-icon" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Name, address, brand, phone or category...">
+                        </div>
+                        <div class="field-row">
+                            <span class="field-label"><span data-i18n="businessType">Business Type</span></span>
+                            <div class="segmented" id="ownership-control">
+                                <button type="button" class="seg-btn active" data-ownership="all" data-i18n="ownershipAll">All</button>
+                                <button type="button" class="seg-btn" data-ownership="independent" data-i18n="ownershipIndependent">Independent</button>
+                                <button type="button" class="seg-btn" data-ownership="branded" data-i18n="ownershipBranded">Branded</button>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <span class="field-label"><span data-i18n="topCategories">Top Categories (Dynamic)</span></span>
+                            <div id="dynamic-category-pills" class="pill-cloud"></div>
+                        </div>
+                        <div class="field-row">
+                            <label class="field-label" for="district-select"><span data-i18n="districtLabel">Sub-region / District</span></label>
+                            <select id="district-select" class="select-input"><option value="" data-i18n="allRegions">All Regions</option></select>
+                        </div>
+                        <div class="field-row">
+                            <label class="field-label" for="category-select"><span data-i18n="detailCategoryLabel">Detail Category</span></label>
+                            <select id="category-select" class="select-input"><option value="" data-i18n="allCategories">All Categories</option></select>
+                        </div>
+                        <div class="field-row">
+                            <label class="field-label" for="confidence-slider">
+                                <span data-i18n="minConfidence">Minimum Confidence Score</span>
+                                <span id="confidence-value" class="mono-val">0.00</span>
+                            </label>
+                            <input id="confidence-slider" type="range" min="0" max="0.95" step="0.05" value="0">
+                        </div>
+                        <label class="toggle-line">
+                            <span data-i18n="onlyPhone">Only with phone number</span>
+                            <input id="only-phone" type="checkbox">
+                        </label>
+                        <label class="toggle-line">
+                            <span data-i18n="onlyWebsite">Only with website</span>
+                            <input id="only-website" type="checkbox">
+                        </label>
+                        <div class="btn-row">
+                            <button id="reset-filters" type="button" class="btn btn-ghost" data-i18n="resetBtn">Reset</button>
+                            <button id="save-preset-btn" type="button" class="btn btn-ghost" data-i18n="savePresetBtn">Save View</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title" data-i18n="savedPresetsTitle">Saved Filter Views</span>
+                        </div>
+                        <div id="preset-list" class="pill-cloud"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title" data-i18n="resultsTitle">Results</span>
+                            <span id="visible-badge" class="list-badge">0</span>
+                        </div>
+                        <div id="preview-list" class="list-stack"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="query-pane" class="tab-pane">
+                <div class="pane-scroll">
+                    <div class="card">
+                        <div class="card-title" data-i18n="adminBoundaryTitle">Administrative Boundary Fetch (Overture Maps)</div>
+                        <div class="field-row">
+                            <label class="field-label" for="country-select"><span data-i18n="countryLabel">Country</span></label>
+                            <select id="country-select" class="select-input"></select>
+                        </div>
+                        <div class="field-row">
+                            <label class="field-label" for="region-select">
+                                <span data-i18n="regionLabel">State / Province / Region</span>
+                                <span id="region-spinner" class="inline-spinner" style="display:none;"></span>
+                            </label>
+                            <select id="region-select" class="select-input"></select>
+                        </div>
+                        <div class="field-row">
+                            <input id="district-search" class="text-input" type="search" data-i18n-placeholder="districtSearchPlaceholder" placeholder="Search sub-regions...">
+                        </div>
+                        <div class="btn-row">
+                            <button id="select-all-districts" type="button" class="btn btn-ghost btn-sm" data-i18n="selectAllBtn">Select All</button>
+                            <button id="clear-districts" type="button" class="btn btn-ghost btn-sm" data-i18n="clearBtn">Clear</button>
+                        </div>
+                        <div id="district-checkboxes" class="district-box"></div>
+                        <label class="toggle-line">
+                            <span data-i18n="deduplicateLabel">Auto-merge duplicate records</span>
+                            <input id="deduplicate-toggle" type="checkbox" checked>
+                        </label>
+                        <label class="toggle-line">
+                            <span data-i18n="forceRefreshLabel">Refresh cache (Fetch fresh from cloud)</span>
+                            <input id="force-refresh-toggle" type="checkbox">
+                        </label>
+                        <button id="fetch-districts-btn" type="button" class="btn btn-primary">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span data-i18n="fetchDistrictsBtn">Fetch Selected Region</span>
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title" data-i18n="globalAreaTitle">Global Map Area Fetch</div>
+                        <div class="btn-row">
+                            <button id="draw-fetch-btn" type="button" class="btn btn-teal" data-i18n="drawPolygonBtn">Draw Polygon &amp; Fetch</button>
+                            <button id="viewport-fetch-btn" type="button" class="btn btn-ghost" data-i18n="viewportFetchBtn">Fetch Visible Area</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title" data-i18n="cachedDatasetsTitle">Cached Datasets</div>
+                        <div id="cache-list" class="list-stack"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="analytics-pane" class="tab-pane">
+                <div class="pane-scroll">
+                    <div class="kpi-grid">
+                        <div class="kpi-box">
+                            <div id="kpi-visible" class="kpi-value">0</div>
+                            <div class="kpi-label"><span data-i18n="kpiActivePoi">Active POI</span> (<span id="kpi-total">0</span> <span data-i18n="kpiTotalSuffix">total</span>)</div>
+                        </div>
+                        <div class="kpi-box">
+                            <div id="kpi-dedup" class="kpi-value">0</div>
+                            <div class="kpi-label" data-i18n="kpiDedup">Cleaned Duplicates</div>
+                        </div>
+                        <div class="kpi-box">
+                            <div id="kpi-independent" class="kpi-value">0%</div>
+                            <div class="kpi-label" data-i18n="kpiIndependentRate">Independent Business Rate</div>
+                        </div>
+                        <div class="kpi-box">
+                            <div id="kpi-contact" class="kpi-value">0%</div>
+                            <div class="kpi-label" data-i18n="kpiContactRate">Contact Completeness</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-head">
+                            <span class="card-title" data-i18n="exportTitle">Export</span>
+                            <span id="export-count-badge" class="list-badge">0</span>
+                        </div>
+                        <div class="export-grid">
+                            <button id="export-csv" type="button" class="export-card">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                                <span>CSV</span>
+                            </button>
+                            <button id="export-xlsx" type="button" class="export-card">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                                <span>Excel</span>
+                            </button>
+                            <button id="export-geojson" type="button" class="export-card">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                                <span>GeoJSON</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title" data-i18n="categoryBreakdownTitle">Category Distribution (Click to Filter)</div>
+                        <div id="category-chart" class="list-stack"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title" data-i18n="districtBreakdownTitle">Region / District Distribution</div>
+                        <div id="district-chart" class="list-stack"></div>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <main class="stage">
+            <div class="floating-bar">
+                <div class="floating-group">
+                    <button id="toggle-sidebar" type="button" class="tool-btn">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                        <span data-i18n="panelBtn">Panel</span>
+                    </button>
+                    <span class="tool-divider"></span>
+                    <button type="button" class="tool-btn view-mode-btn active" data-mode="cluster" data-i18n="modeCluster">Cluster</button>
+                    <button type="button" class="tool-btn view-mode-btn" data-mode="dots" data-i18n="modeDots">Points</button>
+                    <button type="button" class="tool-btn view-mode-btn" data-mode="heat" data-i18n="modeHeat">Heatmap</button>
+                    <span class="tool-divider"></span>
+                    <button id="toggle-boundaries" type="button" class="tool-btn active" data-i18n="boundariesBtn">Boundaries</button>
+                    <button id="draw-filter-btn" type="button" class="tool-btn" data-i18n="areaFilterBtn">Area Filter</button>
+                    <button id="clear-area-btn" type="button" class="tool-btn" style="display:none;" data-i18n="clearAreaBtn">Clear Area</button>
+                </div>
+                <div class="floating-group">
+                    <button type="button" class="tool-btn basemap-btn active" data-basemap="street" data-i18n="basemapStreet">Street</button>
+                    <button type="button" class="tool-btn basemap-btn" data-basemap="light" data-i18n="basemapLight">Light</button>
+                    <button type="button" class="tool-btn basemap-btn" data-basemap="dark" data-i18n="basemapDark">Dark</button>
+                    <button type="button" class="tool-btn basemap-btn" data-basemap="satellite" data-i18n="basemapSatellite">Satellite</button>
+                </div>
+            </div>
+            <div id="toast" class="toast" role="status" aria-live="polite"></div>
+            <div id="map"></div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script src="js/svg_icons.js?v=6"></script>
+    <script src="js/i18n_service.js?v=6"></script>
+    <script src="js/api_client.js?v=6"></script>
+    <script src="js/poi_repository.js?v=6"></script>
+    <script src="js/preset_store.js?v=6"></script>
+    <script src="js/popup_builder.js?v=6"></script>
+    <script src="js/polygon_draw_controller.js?v=6"></script>
+    <script src="js/poi_layer_renderer.js?v=7"></script>
+    <script src="js/map_controller.js?v=7"></script>
+    <script src="js/explore_panel.js?v=6"></script>
+    <script src="js/query_panel.js?v=6"></script>
+    <script src="js/analytics_panel.js?v=6"></script>
+    <script src="js/toolbar_controller.js?v=6"></script>
+    <script src="js/app_controller.js?v=6"></script>
+    <script src="js/app.js?v=6"></script>
+</body>
+</html>
