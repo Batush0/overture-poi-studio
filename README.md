@@ -4,6 +4,20 @@ An interactive geospatial Point of Interest (POI) exploration, extraction, dedup
 
 ---
 
+## Screenshots
+
+### Interactive Polygon Extraction & Administrative Boundary Fetching
+Draw custom polygons anywhere on the map with draggable/deletable vertices and a centered **Fetch** action, or query POIs by country, region, and district boundaries with local dataset caching.
+
+![Interactive Polygon Extraction and Fetch Data Panel](docs/screenshots/polygon-fetch.png)
+
+### POI Exploration, Dynamic Filtering & Detail Inspection
+Inspect tens of thousands of POIs smoothly with viewport-culled HTML5 Canvas rendering, dynamic category filters, business type segmentation, confidence thresholds, and rich POI detail cards with direct Google Maps and OpenStreetMap links.
+
+![POI Exploration, Dynamic Filters and Detail Popup](docs/screenshots/explore-poi-details.png)
+
+---
+
 ## Key Features
 
 - **Global Administrative Boundary Querying:** Query POIs across 197 countries by administrative divisions (country, state/province/region, and sub-region/district) with automatic boundary GeoJSON overlays.
